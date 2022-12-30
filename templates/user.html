@@ -1,0 +1,20 @@
+{% load static %}
+{% include 'header.html' %}
+<br>
+<div style="margin-top: 15;">
+{% for data in obj %}
+{% if not data.is_superuser %}
+<ul>
+    <li><h2>Username : {{data.username}}</h2></li><br>
+    <li><h4>Email : {{data.email}}</h4></li>
+    <li><h4>First Name : {{data.first_name}}</h4></li>
+    <li><h4>Last Name : {{data.last_name}}</h4></li>
+</ul>
+{% endif %}
+{% if user.username != data.username %}
+<form action="/chat/{{data.username}}" style="margin:10vh;">
+<button class="btn btn-outline-info" type="submit">Chat</button>
+</form>
+{% endif %}
+{% endfor %}
+</div>

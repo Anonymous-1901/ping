@@ -1,0 +1,219 @@
+ <!-- Google Fonts -->
+ {% load static %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<script src="{% static 'js/messages.js' %}" defer></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+<link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+<!-- char-area -->
+{% if request.user.is_authenticated %}
+<input type="hidden" id="logged-in-user" value="{{ user.id }}" >
+{% endif %}
+<!-- Logged in as : {{user}} -->
+{% include 'header.html' %}
+<section class="message-area" style="margin-top: -25px ;">
+    <div class="container">
+        <div class="row">
+            <div class="col-14">
+                <div class="chat-area">
+                    <!-- chatlist -->
+                    <div class="chatlist" style="background-color: seashell;">
+                        <div class="modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="chat-header">
+                                    <form>
+                                    <div class="msg-search">
+                                        <input type="search" class="form-control"
+                                            id="search"
+                                            name="search"
+                                            placeholder="Search"
+                                            aria-label="search" autocomplete="off">
+                                            
+                                        <button type="submit"><a class="add"><img
+                                                class="img-fluid"
+                                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb6c1W6R6OJcSmlae4Yfm4hqEQb_MJvqYs1A&usqp=CAU"
+                                                style="width: 20px; height : 20px; margin-left:2px">
+                                        </a></button>
+                                    </form>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- chat-list -->
+                                    <div class="chat-lists">
+                                        <div class="tab-content"
+                                            id="myTabContent">
+                                            {% for user in users %}
+                                                {% if not user.is_superuser %}
+                                                <div class="chat-list">
+                                                    <a href="{% url 'chat_user' user.username %}" class="d-flex
+                                                        align-items-center">
+                                                        <div
+                                                            class="flex-shrink-0">
+                                                            <img style="width:40px;height:40px;border-radius:50%"
+                                                                class="img-fluid"
+                                                                src="{% static 'profile.png' %}"
+                                                                alt="user img">
+                                                        </div>
+                                                        
+                                                        <div class="flex-grow-1">
+                                                            <h3 style="margin: 15px;">{{user.username}}</h3>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                {% endif %}
+                                                {% endfor %}
+                                                <!-- chat-list -->
+                                        </div>
+
+                                    </div>
+                                    <!-- chat-list -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- chatlist -->
+                    <!-- chatbox -->
+                    <div class="chatbox">
+                        <div class="modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="msg-head">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="d-flex
+                                                align-items-center">
+                                                <span class="chat-icon"><img
+                                                        class="img-fluid"
+                                                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLeqsbTn6eqpr7PJzc/j5ebf4eLZ3N2wtrnBxsjN0NLGysy6v8HT1tissra8wMNxTKO9AAAFDklEQVR4nO2d3XqDIAxAlfivoO//tEOZWzvbVTEpic252W3PF0gAIcsyRVEURVEURVEURVEURVEURVEURVEURVEURVEURflgAFL/AirAqzXO9R7XNBVcy9TbuMHmxjN6lr92cNVVLKEurVfK/zCORVvW8iUBnC02dj+Wpu0z0Y6QlaN5phcwZqjkOkK5HZyPAjkIjSO4fIdfcOwFKkJlX4zPu7Ha1tIcwR3wWxyFhRG6g4Je0YpSPDJCV8a2Sv2zd1O1x/2WMDZCwljH+clRrHfWCLGK8REMiql//2si5+DKWKcWeAGcFMzzNrXC/0TUwQ2s6+LhlcwjTMlYsUIQzPOCb7YBiyHopyLXIEKPEkI/TgeuiidK/R9FniUDOjRDpvm0RhqjMyyXNjDhCfIMYl1gGjIMIuYsnGEYRMRZOMMunaLVwpWRW008v6fYKDIzxCwVAeNSO90BJW6emelYBRF/kHpYGVaoxTDAaxOFsfP9y8hpJ4xd7gOcij7JNGQ1EYFgkPJa1jQEiYZXRaRINKxSDUW9n+FT82lSKadkiru9/4XPqSLWOekGPoY05TAvLm9orm+YWuwHoBHkZKijNBJGmeb61eL6Ff/6q7bLr7yvv3vKGhpDRjvgjGaPz+gUg6YgcvpyAR2FIZ9U6nEEyZRTovmEU32KichpGn7C17XrfyH9gK/c0CMP05HZIM2uf9sEveizKveBy9/6Qt7o89ne33D525cfcIMW6ab+TMEukQbQbu+xu7X3A9bChmWaCeAkG17bpntwXgWxHaMzGPmUaR5dQZiKqRVeUZ3047fi3nAu28h4CHxCsZAgmEH8Y27jJAhm8c+5RQzRQNVGhVFSfxOYIjp/pP7RxzjevYXVGf4eLt+BJ1vCuLuLkrgABgCGXZ2wik5uty+oBvNirI6mkzhAf4Gsb58Hcm67Jzd+KwD10BYPLL3e0MjvKrgAULnOfveF/O4N2Xb9BZom3gJes3F9X5Zze8/6Yt09b4CrqsEjUv8oFBaR2rl+6CZr2xVrp24o/WitBKuGrrpl1+bFkmK2qXTON4VpbdfLa7o7y/WdLxG7lm2Lqh2clOwTegbvc/vj2U78CwhA87Bn8G5Nk3eOb0Nsr9flz3sG78UUtue4kpv1xvjg3TMay62BMlTlP+vrOMnJsRmt/ze0jsfkPPYdAH57hK+34PeOyc8XIXu5xT2HsUkdZz+adwg8HGFfQ3K5jtDvbUiO4Di9/ywHGrL88pDizZ++oTp+an+SMX/ndymUCwmHMdO7yuOx83pUx/eEMU0AvxWndwgidAqOZ8ypCwdEfvvEo6D9HwpA8wzvmOJEqAg9ySu8g4x0Hb9hSB/BANEKJ+LbPBU0lzbAJs4xt1AoshKkUGQmiH8/jJ0gdhTTLmSegHlPE0oOdXALnqDjKYh3px//fSgSWG8UqfrrIICzYYSJXRr9BSPbpNzw7gBjKjKOYI7ReIGqQRIap5+5MdjyvuDkExvGeXSlONWZAP3/AZBwJohU7QJRGU+cTVH18ELmRPNBmibW6MT/k1b0XhdkRBvyT6SB6EYv/GvhSmRNpGngRULsAlxMCGNXp7w3FfdEbTEEDdLI9TdIKRUzUesa3I461ER8cpNT7gMRhpKmYVS9ELOgCUQsa4SsulciKiLbY+AnHD8cpuhISsnxpamI84sbDq9qYJgf8wiiOBrC7Ml7M7ZECCqKoiiKoiiKoiiKoijv5AvJxlZRyNWWLwAAAABJRU5ErkJggg=="
+                                                        alt="image title"></span>
+                                                <div class="flex-shrink-0">
+                                                    <img class="img-fluid" style="width:50px;height:50px;border-radius:50%"
+                                                        src="{% static 'profile.png' %}"
+                                                        alt="user img">
+                                                </div>
+                                                {% if username_obj %}
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h3>{{username_obj}}</h3>
+                                                </div>
+                                                {% else %}
+                                                {% for user in users %}
+                                                
+                                                <div class="flex-grow-1 ms-3">
+                                                    {% if forloop.first %}
+                                                    
+                                                    <h3>{{user}}</h3>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                {% endfor %}
+                                                {% endif %}
+                                                
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <ul class="moreoption">
+                                                <li class="navbar nav-item
+                                                    dropdown">
+                                                    <a class="nav-link
+                                                        dropdown-toggle"
+                                                        href="#" role="button"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false"><i
+                                                            class="fa
+                                                            fa-ellipsis-v"
+                                                            aria-hidden="true"></i></a>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a
+                                                                class="dropdown-item"
+                                                                href="/user/{{username_obj}}">View Profile</a></li>
+                                                        <li><a
+                                                                class="dropdown-item"
+                                                                href="#">Call
+                                                                </a></li>
+                                                        <li>
+                                                            <hr
+                                                                class="dropdown-divider">
+                                                        </li>
+                                                        <li><a
+                                                                class="dropdown-item"
+                                                                href="#">Block User</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-body" id="message-container">
+                                    <div class="msg-body">
+                                        <ul id="main-chat">
+                                        {% for message in messages %}
+                                        {% if message.sender == request.user.username %}
+                                        <li class="repaly">
+                                            <p> {{message.message}}</p>
+                                            <span class="time">{{message.timestamp|time:'H:i'}}</span>
+                                            </li>
+                                        {% else %}
+                                        <li class="sender">
+                                            <p> {{message.message}}</p>
+                                            <span class="time">{{timestamp|time:'H:i'}}</span>
+                                            </li>
+                                        {% endif %}
+                                        {% endfor %}
+                                        <!-- CHATS HERE -->
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="send-box">
+                                    <form action="" id="ChatForm" class="ChatForm">
+                                        <input type="text" class="form-control" id="InputMessage" autocomplete="off"
+                                            aria-label="message…"
+                                            placeholder="Write message…">
+                                        <button type="submit" class="SendMessage" id="SendMessage"><i class="fa
+                                                fa-paper-plane"
+                                                aria-hidden="true"></i>Send</button>
+                                    </form>
+                                    <div class="send-btns">
+                                        <div class="attach">
+                                            <div class="button-wrapper">
+                                                <span class="label">
+                                                    <img class="img-fluid"
+                                                        src="https://mehedihtml.com/chatbox/assets/img/upload.svg"
+                                                        alt="image title">
+                                                    Attach file
+                                                </span><input type="file"
+                                                    name="upload" id="upload"
+                                                    class="upload-box"
+                                                    placeholder="Upload File"
+                                                    aria-label="Upload File">
+                                            </div>
+
+                                                 </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- chatbox -->
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- char-area -->
+        {{username_obj.id|json_script:"json-username"}}
+        {{request.user.username|json_script:"json-message-username"}}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
